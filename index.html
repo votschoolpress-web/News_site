@@ -16,93 +16,56 @@
 
 <style>
 /* ═══════════════════════════════════════════════════════════════
-   DESIGN SYSTEM - Light & Clean 
+   DESIGN SYSTEM - Light & Clean (밝은 신문사 테마)
 ═══════════════════════════════════════════════════════════════ */
 :root {
-  --bg: #f8f9fa; --bg-2: #ffffff; --bg-3: #f1f3f5;
-  --border: #dee2e6; --border-2: #adb5bd;
-  --gold: #8b6b1a; --text-main: #212529; --text-dim: #495057; --text-mute: #868e96;
+  --bg: #f8f9fa;
+  --bg-2: #ffffff;
+  --bg-3: #f1f3f5;
+  --border: #dee2e6;
+  --border-2: #adb5bd;
+  --gold: #8b6b1a;
+  --text-main: #212529;
+  --text-dim: #495057;
+  --text-mute: #868e96;
+
   --f-display: 'Noto Serif KR', serif; 
   --f-mono: 'DM Mono', monospace;
   --f-body: 'Noto Serif KR', 'AppleSDGothicNeo-Regular', 'Malgun Gothic', serif;
   --max-w: 1200px;
 }
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; font-size: 16px; }
+
 body { background: var(--bg); color: var(--text-main); font-family: var(--f-body); line-height: 1.5; min-height: 100vh; overflow-x: hidden; }
 a { color: inherit; text-decoration: none; }
 button { cursor: pointer; border: none; background: none; font: inherit; color: inherit; }
 code { font-family: var(--f-mono); font-size: 0.85em; background: var(--bg-3); border: 1px solid var(--border); padding: 2px 6px; color: var(--gold); border-radius: 4px; }
+
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 4px; }
 
-/* ── 진단 패널 ── */
-#debug-panel {
-  position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999;
-  background: #1a1a1a; color: #f0f0f0;
-  font-family: var(--f-mono); font-size: 12px;
-  border-top: 3px solid #e67e22;
-  max-height: 50vh; overflow-y: auto;
-}
-#debug-panel.hidden { display: none; }
-.dbg-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 16px; background: #111; position: sticky; top: 0;
-  border-bottom: 1px solid #333;
-}
-.dbg-title { color: #e67e22; font-weight: 700; font-size: 13px; letter-spacing: 0.05em; }
-.dbg-close {
-  background: #c0392b; color: #fff; border: none;
-  padding: 4px 10px; font-size: 11px; cursor: pointer; border-radius: 2px;
-}
-.dbg-body { padding: 12px 16px; display: flex; flex-direction: column; gap: 6px; }
-.dbg-row {
-  display: flex; gap: 10px; align-items: flex-start;
-  padding: 6px 10px; border-radius: 3px; line-height: 1.5;
-}
-.dbg-row.ok   { background: rgba(39,174,96,0.15);  border-left: 3px solid #27ae60; }
-.dbg-row.err  { background: rgba(192,57,43,0.15);  border-left: 3px solid #c0392b; }
-.dbg-row.warn { background: rgba(230,126,34,0.15); border-left: 3px solid #e67e22; }
-.dbg-row.info { background: rgba(52,152,219,0.15); border-left: 3px solid #3498db; }
-.dbg-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
-.dbg-msg { flex: 1; word-break: break-all; color: #ddd; }
-.dbg-msg strong { color: #fff; display: block; margin-bottom: 2px; }
-.dbg-msg small  { color: #999; font-size: 11px; }
-.dbg-fix {
-  display: inline-block; margin-top: 6px;
-  background: #e67e22; color: #fff;
-  padding: 3px 10px; border-radius: 2px; font-size: 11px; cursor: pointer;
-}
-.dbg-fix:hover { background: #d35400; }
-
 /* ═══════════════════════════════════════════════════════════════
-   HEADER 
+   HEADER (로고 왼쪽 배치 & 툴박스 오른쪽 배치)
 ═══════════════════════════════════════════════════════════════ */
 .masthead { position: relative; border-bottom: 1px solid var(--border); background: var(--bg-2); }
 .masthead::before { content: ''; display: block; height: 3px; background: var(--text-main); }
 .masthead__inner { max-width: var(--max-w); margin: 0 auto; padding: 32px 40px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 24px; }
+.masthead__meta { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.12em; color: var(--text-mute); line-height: 1.8; text-transform: uppercase; }
+
+/* 브랜드 영역 (로고 이미지 렌더링 최적화) */
 .masthead__brand { display: flex; align-items: center; justify-content: center; gap: 20px; }
-
-/* ── [수정 1] 로고 플레이스홀더: 빈 img 제거, 텍스트 박스만 표시 ── */
-.logo-placeholder-box {
-  width: 80px; height: 80px;
-  border: 2px dashed var(--border-2);
-  background: var(--bg-3);
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 4px;
-  border-radius: 4px; flex-shrink: 0;
-  color: var(--text-mute);
-}
-.logo-placeholder-box span:first-child { font-size: 22px; }
-.logo-placeholder-box span:last-child  { font-family: var(--f-mono); font-size: 8px; letter-spacing: 0.05em; text-transform: uppercase; }
-
+.logo-container { width: 80px; height: 80px; border: 1px solid var(--border); background: var(--bg); display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 4px; flex-shrink: 0; }
+.logo-container img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
 .title-group { text-align: left; }
 .masthead__title { font-family: var(--f-display); font-size: clamp(28px, 4vw, 52px); font-weight: 700; letter-spacing: 0.02em; line-height: 1.1; color: var(--text-main); white-space: nowrap; }
 .masthead__title strong { color: var(--gold); }
 .masthead__rule { width: 60px; height: 2px; background: var(--border-2); margin: 12px 0; }
 .masthead__sub { font-family: var(--f-body); font-size: 12px; letter-spacing: 0.1em; color: var(--text-dim); }
+
+/* 오른쪽 영역 (날짜 및 툴박스) */
 .masthead__right { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
 #current-date { font-family: var(--f-body); font-size: 13px; font-weight: 700; color: var(--text-main); }
 .toolbox-list { display: flex; flex-direction: column; gap: 4px; font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.05em; color: var(--text-dim); text-transform: uppercase; }
@@ -114,7 +77,7 @@ code { font-family: var(--f-mono); font-size: 0.85em; background: var(--bg-3); b
 .nav-link:first-child { border-left: 1px solid var(--border); }
 .nav-link:hover { color: var(--text-main); background: var(--bg); }
 .nav-link.active { color: var(--gold); font-weight: 700; }
-.nav-link .nav-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); opacity: 0; transition: all 0.2s; }
+.nav-link .nav-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); opacity: 0; }
 .nav-link.active .nav-dot { opacity: 1; }
 .nav-spacer { flex: 1; }
 
@@ -130,7 +93,7 @@ code { font-family: var(--f-mono); font-size: 0.85em; background: var(--bg-3); b
 .sec-label { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; background: var(--text-main); color: var(--bg-2); padding: 4px 10px; }
 .sec-title { font-family: var(--f-display); font-size: 24px; font-weight: 700; color: var(--text-main); margin: 0; }
 
-.btn { font-family: var(--f-mono); font-size: 10px; text-transform: uppercase; font-weight: 500; padding: 6px 12px; border: 1px solid var(--border-2); color: var(--text-dim); border-radius: 2px; background: var(--bg-2); transition: 0.2s; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
+.btn { font-family: var(--f-mono); font-size: 10px; text-transform: uppercase; font-weight: 500; padding: 6px 12px; border: 1px solid var(--border-2); color: var(--text-dim); border-radius: 2px; background: var(--bg-2); transition: 0.2s; }
 .btn:hover { border-color: var(--text-main); color: var(--text-main); background: var(--bg-3); }
 
 .stats-row { display: flex; border: 1px solid var(--border); margin-bottom: 32px; background: var(--bg-2); }
@@ -141,52 +104,23 @@ code { font-family: var(--f-mono); font-size: 0.85em; background: var(--bg-3); b
 
 .list-layout { display: grid; grid-template-columns: 220px 1fr; gap: 32px; align-items: start; }
 @media (max-width: 860px) { .list-layout { grid-template-columns: 1fr; } }
-.category-sidebar { background: var(--bg-2); border: 1px solid var(--border); padding: 20px; position: sticky; top: 60px; }
+.category-sidebar { background: var(--bg-2); border: 1px solid var(--border); padding: 20px; position: sticky; top: 80px; }
 .cat-title { font-family: var(--f-mono); font-size: 11px; font-weight: 600; text-transform: uppercase; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
 .cat-year { font-family: var(--f-display); font-size: 18px; font-weight: 700; margin: 16px 0 8px 0; }
-.cat-month { display: block; width: 100%; text-align: left; padding: 6px 12px; font-size: 14px; color: var(--text-dim); border-left: 3px solid transparent; cursor: pointer; }
+.cat-month { display: block; width: 100%; text-align: left; padding: 6px 12px; font-size: 14px; color: var(--text-dim); border-left: 3px solid transparent; }
 .cat-month:hover, .cat-month.active { color: var(--text-main); background: var(--bg-3); }
 .cat-month.active { border-left-color: var(--gold); font-weight: 700; }
-.cat-all { font-family: var(--f-body); font-size: 15px; color: var(--text-dim); padding: 8px 12px; border-bottom: 1px dashed var(--border); margin-bottom: 8px; width: 100%; text-align: left; cursor: pointer; }
+.cat-all { font-family: var(--f-body); font-size: 15px; color: var(--text-dim); padding: 8px 12px; border-bottom: 1px dashed var(--border); margin-bottom: 8px; width: 100%; text-align: left; }
 .cat-all:hover, .cat-all.active { color: var(--text-main); font-weight: 700; }
 
-/* ── [수정 2] 썸네일 카드: canvas 표시 올바르게 ── */
+/* 고해상도 미리보기 카드 레이아웃 */
 .pdf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 24px; }
 .pdf-card { background: var(--bg-2); border: 1px solid var(--border); cursor: pointer; display: flex; flex-direction: column; transition: all 0.2s ease; overflow: hidden; }
 .pdf-card:hover { transform: translateY(-4px); border-color: var(--text-main); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
-
-.card-thumb {
-  height: 240px;
-  background: var(--bg-3);
-  border-bottom: 1px solid var(--border);
-  position: relative;
-  display: flex; align-items: center; justify-content: center;
-  overflow: hidden;
-}
-/* 로딩 중 텍스트 */
-.card-thumb__msg {
-  position: absolute;
-  font-family: var(--f-mono); font-size: 11px; color: var(--text-mute);
-  display: flex; flex-direction: column; align-items: center; gap: 8px;
-  z-index: 0;
-}
-.mini-spin {
-  width: 20px; height: 20px;
-  border: 2px solid var(--border);
-  border-top-color: var(--text-mute);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-/* 캔버스: object-fit은 canvas에 적용 안 됨 → JS에서 직접 크롭 처리 */
-.card-thumb canvas {
-  position: absolute;
-  top: 0; left: 0;
-  display: none;
-  z-index: 1;
-  transition: transform 0.3s ease;
-}
+.card-thumb { height: 260px; background: var(--bg-3); border-bottom: 1px solid var(--border); position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.card-thumb::before { content: '미리보기 로딩중...'; position: absolute; font-family: var(--f-mono); font-size: 11px; color: var(--text-mute); z-index: 0; }
+.card-thumb canvas { position: relative; width: 100%; height: 100%; object-fit: cover; object-position: top center; z-index: 1; transition: transform 0.3s ease; }
 .pdf-card:hover .card-thumb canvas { transform: scale(1.03); }
-
 .card-top { padding: 16px; flex: 1; }
 .card-issue { font-family: var(--f-mono); font-size: 10px; color: var(--gold); margin-bottom: 4px; }
 .card-date { font-family: var(--f-display); font-size: 22px; font-weight: 700; color: var(--text-main); }
@@ -206,76 +140,12 @@ code { font-family: var(--f-mono); font-size: 0.85em; background: var(--bg-3); b
 .viewer-title { font-family: var(--f-display); font-size: clamp(24px, 3.5vw, 36px); font-weight: 700; line-height: 1.2; color: var(--text-main); margin: 0; }
 .viewer-title em { font-style: normal; font-weight: 400; color: var(--gold); }
 
-.pdf-frame { background: var(--bg-3); border: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
-.pdf-toolbar {
-  background: var(--bg-2);
-  border-bottom: 1px solid var(--border);
-  padding: 8px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px;
-}
+.pdf-frame { background: var(--bg-3); border: 1px solid var(--border); display: flex; flex-direction: column; }
+.pdf-toolbar { background: var(--bg-2); border-bottom: 1px solid var(--border); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; }
 .pdf-badge { font-family: var(--f-mono); font-size: 10px; background: var(--text-main); color: var(--bg-2); padding: 2px 8px; font-weight: 600; }
 .pdf-filename { font-family: var(--f-mono); font-size: 11px; color: var(--text-dim); margin-left: 10px; }
-
-/* 줌 컨트롤 */
-.zoom-controls {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.zoom-btn {
-  width: 32px; height: 32px;
-  border: 1px solid var(--border);
-  background: var(--bg-3);
-  font-size: 18px;
-  font-weight: 700;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  color: var(--text-main);
-  border-radius: 4px;
-  transition: all 0.15s;
-  flex-shrink: 0;
-  line-height: 1;
-}
-.zoom-btn:hover { background: var(--text-main); color: var(--bg-2); border-color: var(--text-main); }
-.zoom-btn:active { transform: scale(0.93); }
-.zoom-level {
-  font-family: var(--f-mono);
-  font-size: 12px;
-  color: var(--text-main);
-  min-width: 44px;
-  text-align: center;
-  font-weight: 700;
-  background: var(--bg-3);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 4px 6px;
-}
-
-#pdf-embed {
-  width: 100%;
-  height: 76vh;
-  min-height: 500px;
-  overflow-y: auto;
-  overflow-x: auto;
-  background: #d0d0d0;
-  padding: 20px 0;
-  text-align: center;
-  box-sizing: border-box;
-}
-
-#pdf-embed canvas {
-  display: block;
-  margin: 0 auto 16px;
-  max-width: none;        /* 줌 시 잘리지 않도록 */
-  height: auto !important;
-  border: 1px solid #bbb;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-  background: #fff;
-}
+#pdf-embed { width: 100%; height: 76vh; min-height: 500px; overflow-y: auto; overflow-x: hidden; padding: 24px 0; text-align: center; }
+#pdf-embed canvas { max-width: 90%; margin: 0 auto 24px auto; display: block; border: 1px solid var(--border-2); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
 
 .sidebar { position: sticky; top: 80px; display: flex; flex-direction: column; gap: 20px; }
 .panel { background: var(--bg-2); border: 1px solid var(--border); }
@@ -288,13 +158,12 @@ code { font-family: var(--f-mono); font-size: 0.85em; background: var(--bg-3); b
 .info-table td { padding: 8px 0; font-size: 13px; color: var(--text-main); }
 .info-table td:first-child { font-family: var(--f-mono); font-size: 11px; color: var(--text-mute); width: 60px; }
 .issue-nav { display: flex; gap: 8px; margin-bottom: 8px; }
-.issue-nav-btn { flex: 1; padding: 8px; border: 1px solid var(--border); background: var(--bg-3); font-size: 12px; cursor: pointer; }
+.issue-nav-btn { flex: 1; padding: 8px; border: 1px solid var(--border); background: var(--bg-3); font-size: 12px; }
 .issue-nav-btn:hover:not(:disabled) { border-color: var(--text-main); color: var(--text-main); background: var(--bg-2); }
 .issue-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
 .state-box { padding: 60px 20px; text-align: center; background: var(--bg-2); border: 1px solid var(--border); }
 .state-box h3 { font-family: var(--f-display); font-size: 20px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
-.state-box p { font-family: var(--f-mono); font-size: 12px; color: var(--text-mute); margin-top: 8px; line-height: 1.8; }
 .spin-ring { width: 36px; height: 36px; margin: 0 auto 20px; border: 3px solid var(--border); border-top-color: var(--text-main); border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -323,12 +192,9 @@ code { font-family: var(--f-mono); font-size: 0.85em; background: var(--bg-3); b
 <header class="masthead">
   <div class="masthead__inner">
     <div class="masthead__meta">신문편집부 × 컴퓨터 동아리<br/>공동 편집 시스템 v1.0</div>
-
     <div class="masthead__brand">
-      <!-- [수정 1] 빈 src="" img 제거 → 로고 플레이스홀더 박스로 교체 -->
-      <div class="logo-placeholder-box">
-        <span>📰</span>
-        <span>로고 준비중</span>
+      <div class="logo-container">
+        <img src="logo.jpg" alt="동아리 로고" />
       </div>
       <div class="title-group">
         <h1 class="masthead__title">The <strong>School</strong> Press</h1>
@@ -336,13 +202,9 @@ code { font-family: var(--f-mono); font-size: 0.85em; background: var(--bg-3); b
         <p class="masthead__sub">신문편집부 &nbsp;×&nbsp; 컴퓨터 동아리</p>
       </div>
     </div>
-
     <div class="masthead__right">
       <div id="current-date">날짜 로딩 중…</div>
-      <div class="toolbox-list">
-        <span>✓ 최신호 자동 갱신</span>
-        <span>✓ PDF 미리보기 생성</span>
-      </div>
+      <div class="toolbox-list"><span>✓ 최신호 자동 갱신</span><span>✓ 고화질 미리보기 스캔</span></div>
     </div>
   </div>
 </header>
@@ -364,10 +226,7 @@ code { font-family: var(--f-mono); font-size: 0.85em; background: var(--bg-3); b
     </div>
     <div class="sec-header">
       <div class="sec-header__left"><span class="sec-label">Archive</span><h2 class="sec-title">발행 신문 목록</h2></div>
-      <span class="sec-count">
-        <span id="list-count" style="margin-right: 8px; font-family:var(--f-mono); font-size:11px; color:var(--text-mute);"></span>
-        <button class="btn" onclick="refreshList()">🔄 수동 갱신</button>
-      </span>
+      <span class="sec-count"><span id="list-count" style="margin-right: 8px;"></span><button class="btn" onclick="refreshList()">🔄 수동 갱신</button></span>
     </div>
     <div class="list-layout">
       <aside class="category-sidebar">
@@ -381,16 +240,10 @@ code { font-family: var(--f-mono); font-size: 0.85em; background: var(--bg-3); b
   </div>
 
   <div class="view" id="view-viewer">
-    <nav class="breadcrumb">
-      <a href="#" onclick="showView('list');return false;">홈</a>
-      <span class="breadcrumb__sep">›</span>
-      <a href="#" onclick="showView('list');return false;">발행 목록</a>
-      <span class="breadcrumb__sep">›</span>
-      <span id="breadcrumb-file">열람 중…</span>
-    </nav>
+    <nav class="breadcrumb"><a href="#" onclick="showView('list');return false;">홈</a><span class="breadcrumb__sep">›</span><a href="#" onclick="showView('list');return false;">발행 목록</a><span class="breadcrumb__sep">›</span><span id="breadcrumb-file">열람 중…</span></nav>
     <div class="viewer-header">
       <div><h2 class="viewer-title" id="viewer-title">신문 열람 중…</h2></div>
-      <div class="viewer-actions" style="display:flex;gap:8px;flex-wrap:wrap;">
+      <div class="viewer-actions">
         <a id="btn-newtab" href="#" target="_blank" rel="noopener" class="btn">↗ 새 탭</a>
         <a id="btn-download" href="#" download class="btn">↓ 다운로드</a>
         <button class="btn" onclick="showView('list')">← 목록</button>
@@ -399,22 +252,13 @@ code { font-family: var(--f-mono); font-size: 0.85em; background: var(--bg-3); b
     <div class="viewer-layout">
       <div>
         <div class="pdf-frame">
-          <div class="pdf-toolbar">
-            <div><span class="pdf-badge">PDF</span><span class="pdf-filename" id="viewer-filename">파일명</span></div>
-            <div class="zoom-controls">
-              <button class="zoom-btn" id="zoom-out" title="축소">−</button>
-              <span class="zoom-level" id="zoom-level">100%</span>
-              <button class="zoom-btn" id="zoom-in"  title="확대">+</button>
-              <button class="zoom-btn" id="zoom-fit" title="너비 맞춤" style="width:auto;padding:0 8px;font-size:10px;font-family:var(--f-mono);">맞춤</button>
-            </div>
-            <span id="pdf-page-info" style="font-family:var(--f-mono);font-size:10px;color:var(--text-mute);"></span>
-          </div>
+          <div class="pdf-toolbar"><div><span class="pdf-badge">PDF</span><span class="pdf-filename" id="viewer-filename">파일명</span></div></div>
           <div id="pdf-embed"></div>
         </div>
         <section class="discussion-section" id="discussion">
           <div class="discussion-header">
             <h3 class="discussion-title">회의 보드 <span class="discussion-badge">Live</span></h3>
-            <p class="discussion-sub" style="font-family:var(--f-mono);font-size:11px;color:var(--text-mute);">GitHub 계정으로 로그인 후 피드백을 남겨주세요</p>
+            <p class="discussion-sub">GitHub 계정으로 로그인 후 피드백을 남겨주세요</p>
           </div>
           <div class="giscus-wrap"><div id="giscus-container"></div></div>
         </section>
@@ -428,7 +272,7 @@ code { font-family: var(--f-mono); font-size: 0.85em; background: var(--bg-3); b
           <div class="panel__head"><div class="panel__head-dot"></div><span class="panel__title">다른 호 보기</span></div>
           <div class="panel__body">
             <div class="issue-nav"><button class="issue-nav-btn" id="btn-prev" disabled>← 이전</button><button class="issue-nav-btn" id="btn-next" disabled>다음 →</button></div>
-            <button class="btn" style="width:100%;justify-content:center;margin-top:6px;" onclick="document.getElementById('discussion').scrollIntoView({behavior:'smooth'})">💬 회의 보드로 이동</button>
+            <button class="btn btn-full" onclick="document.getElementById('discussion').scrollIntoView({behavior:'smooth'})">💬 회의 보드로 이동</button>
           </div>
         </div>
       </aside>
@@ -443,17 +287,6 @@ code { font-family: var(--f-mono); font-size: 0.85em; background: var(--bg-3); b
   </div>
 </footer>
 
-<!-- ── 진단 패널 (문제 해결 후 삭제 가능) ── -->
-<div id="debug-panel">
-  <div class="dbg-header">
-    <span class="dbg-title">🔍 진단 패널 — 로딩 상태</span>
-    <button class="dbg-close" onclick="document.getElementById('debug-panel').classList.add('hidden')">닫기</button>
-  </div>
-  <div class="dbg-body" id="dbg-body">
-    <div class="dbg-row info"><span class="dbg-icon">⏳</span><div class="dbg-msg"><strong>진단 시작 중…</strong></div></div>
-  </div>
-</div>
-
 <script>
 /* ────────────────────────────────────────────────────────────
    ★ CONFIG (설정값) ★
@@ -467,35 +300,11 @@ const CONFIG = {
   cacheTTL:  5 * 60 * 1000,
 };
 
-/* ── 진단 로그 함수 ── */
-function dbg(type, title, detail = '', fixLabel = '', fixFn = null) {
-  const body = document.getElementById('dbg-body');
-  if (!body) return;
-  const icons = { ok:'✅', err:'❌', warn:'⚠️', info:'ℹ️' };
-  const row = document.createElement('div');
-  row.className = `dbg-row ${type}`;
-  row.innerHTML = `
-    <span class="dbg-icon">${icons[type] || '▪'}</span>
-    <div class="dbg-msg">
-      <strong>${title}</strong>
-      ${detail ? `<small>${detail}</small>` : ''}
-      ${fixLabel ? `<span class="dbg-fix" id="dbg-fix-${Date.now()}">${fixLabel}</span>` : ''}
-    </div>`;
-  if (fixLabel && fixFn) {
-    row.querySelector('.dbg-fix').addEventListener('click', fixFn);
-  }
-  // 첫 번째 "진단 시작 중" 메시지 제거
-  const first = body.querySelector('.dbg-row.info');
-  if (first && first.textContent.includes('진단 시작 중')) first.remove();
-  body.appendChild(row);
-  body.scrollTop = body.scrollHeight;
-}
-
 const GISCUS = {
-  repo:       'kimyunho0918-creator/News_site',
-  repoId:     'YOUR_REPO_ID',        // ← giscus.app 에서 발급
+  repo:       'YOUR_GITHUB_USERNAME/YOUR_REPO_NAME',
+  repoId:     'YOUR_REPO_ID',                        
   category:   '회의록',
-  categoryId: 'YOUR_CATEGORY_ID',   // ← giscus.app 에서 발급
+  categoryId: 'YOUR_CATEGORY_ID',                    
   theme:      'light',
   lang:       'ko',
 };
@@ -503,59 +312,25 @@ const GISCUS = {
 const CMAP_URL = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/';
 
 /* ────────────────────────────────────────────────────────────
-   UTILITIES
+   UTILITIES & 로직
 ──────────────────────────────────────────────────────────── */
-const contUrl = path =>
-  `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}`;
-
-/* PDF URL — media.githubusercontent.com 사용 (LFS 파일도 실제 바이너리 반환) */
-const pdfUrl = filePath =>
-  `https://media.githubusercontent.com/media/${CONFIG.owner}/${CONFIG.repo}/${CONFIG.branch}/${filePath}`;
+const contUrl = path => `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}`;
 
 class RateLimitError extends Error { constructor(m){ super(m); this.name='RateLimitError'; } }
 class ApiError extends Error { constructor(m,s){ super(m); this.name='ApiError'; this.status=s; } }
 
 async function apiFetch(url) {
-  dbg('info', 'GitHub API 호출 중…', url.replace('https://api.github.com',''));
   const headers = { 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' };
   if (CONFIG.token) headers['Authorization'] = `Bearer ${CONFIG.token}`;
   const res = await fetch(url, { headers });
-
-  const remaining = res.headers.get('X-RateLimit-Remaining');
-  const resetTs   = res.headers.get('X-RateLimit-Reset');
-  const resetTime = resetTs ? new Date(parseInt(resetTs)*1000).toLocaleTimeString('ko-KR') : '?';
-
-  if (res.status === 403 || res.status === 429) {
-    dbg('err', 'API 호출 한도 초과 (Rate Limit)',
-      `남은 횟수: ${remaining ?? '?'} / 초기화 시각: ${resetTime}`,
-      '해결 방법 보기',
-      () => alert('GitHub Personal Access Token을 발급받아 CONFIG.token에 입력하세요.\n\nGitHub → Settings → Developer settings → Fine-grained tokens → Contents: Read-only')
-    );
-    throw new RateLimitError(`API 호출 한도 초과. ${resetTime}에 초기화됩니다.`);
-  }
-  if (!res.ok) {
-    dbg('err', `API 오류: HTTP ${res.status}`,
-      res.status === 404
-        ? `pdfs 폴더를 찾을 수 없습니다. owner/repo/pdfFolder 설정을 확인하세요.`
-        : `서버 응답: ${res.statusText}`
-    );
-    throw new ApiError(`API 오류: ${res.status}`, res.status);
-  }
-
-  dbg('ok', `API 응답 성공`, `남은 호출 횟수: ${remaining ?? '?'}회`);
+  if (res.status === 403 || res.status === 429) throw new RateLimitError(`API 호출 한도 초과.`);
+  if (!res.ok) throw new ApiError(`API 오류: ${res.status}`, res.status);
   return res.json();
 }
 
 const Cache = {
   _k: k => `np_${k}`,
-  get(k) {
-    try {
-      const r = sessionStorage.getItem(this._k(k));
-      if (!r) return null;
-      const { data, ts } = JSON.parse(r);
-      return (Date.now() - ts > CONFIG.cacheTTL) ? null : data;
-    } catch { return null; }
-  },
+  get(k) { try { const r = sessionStorage.getItem(this._k(k)); if (!r) return null; const { data, ts } = JSON.parse(r); return (Date.now() - ts > CONFIG.cacheTTL) ? null : data; } catch { return null; } },
   set(k, d) { try { sessionStorage.setItem(this._k(k), JSON.stringify({ data: d, ts: Date.now() })); } catch {} },
   clear(k) { sessionStorage.removeItem(this._k(k)); }
 };
@@ -564,13 +339,7 @@ function parseFileName(filename) {
   const m = filename.match(/^(\d{2})_(\d{2})_(\d{2})(?:_.*)?\.pdf$/i);
   if (!m) return null;
   const year = 2000 + parseInt(m[1]), month = parseInt(m[2]), day = parseInt(m[3]);
-  const date = new Date(year, month - 1, day);
-  if (isNaN(date.getTime())) return null;
-  return {
-    year, month, day,
-    label:   `${year}년 ${month}월 ${day}일`,
-    sortKey: `${year}${m[2]}${m[3]}`,
-  };
+  return { year, month, day, label: `${year}년 ${month}월 ${day}일`, sortKey: `${year}${m[2]}${m[3]}` };
 }
 
 let APP = { files: [], currentFile: null, currentView: 'list', activeFilter: 'all' };
@@ -608,87 +377,35 @@ function refreshList() {
   initList();
 }
 
-/* ────────────────────────────────────────────────────────────
-   LIST
-──────────────────────────────────────────────────────────── */
 async function initList() {
   const container = document.getElementById('pdf-list-container');
   container.innerHTML = `<div class="state-box"><div class="spin-ring"></div><h3>목록 불러오는 중…</h3></div>`;
 
-  dbg('info', '목록 로딩 시작', `레포: ${CONFIG.owner}/${CONFIG.repo} / 폴더: ${CONFIG.pdfFolder}`);
-
   try {
     const cacheKey = `list_${CONFIG.owner}_${CONFIG.repo}`;
-
-    // 혹시 깨진 캐시가 있으면 자동 제거
-    const cached = Cache.get(cacheKey);
-    if (cached && cached.length > 0 && cached[0].year === undefined) {
-      dbg('warn', '깨진 캐시 감지 → 자동 삭제', '이전 버전 코드가 저장한 year/month 없는 데이터');
-      Cache.clear(cacheKey);
-    }
-
     let files = Cache.get(cacheKey);
+    let fromCache = true;
 
-    if (files) {
-      dbg('ok', `캐시에서 불러옴 (${files.length}개)`, '새로고침하려면 수동 갱신 버튼을 누르세요.');
-    } else {
+    if (!files) {
+      fromCache = false;
       const raw = await apiFetch(contUrl(CONFIG.pdfFolder));
-
-      if (!Array.isArray(raw)) {
-        dbg('err', 'pdfs 폴더 응답이 배열이 아님', `응답 타입: ${typeof raw}`);
-        throw new ApiError('pdfs 폴더를 찾을 수 없습니다.', 404);
-      }
-
-      dbg('info', `폴더 내 항목 ${raw.length}개 발견`, '이제 PDF 파일만 필터링합니다.');
-
-      const allPdfs = raw.filter(f => f.type === 'file' && /\.pdf$/i.test(f.name));
-      dbg('info', `PDF 파일 ${allPdfs.length}개 확인`,
-        allPdfs.length > 0 ? allPdfs.map(f => f.name).join(', ') : '파일 없음');
-
-      files = allPdfs
-        .map(f => {
-          const info = parseFileName(f.name);
-          if (!info) {
-            dbg('warn', `파일명 형식 불일치: ${f.name}`, 'YY_MM_DD.pdf 형식이 아닌 파일은 무시됩니다.');
-          }
-          // download_url 도 함께 저장 (LFS 파일 대응)
-          return info ? { name: f.name, path: f.path, downloadUrl: f.download_url || null, ...info } : null;
-        })
-        .filter(Boolean)
-        .sort((a, b) => b.sortKey.localeCompare(a.sortKey));
-
-      dbg('ok', `파싱 완료: ${files.length}개 신문 인식됨`,
-        files.length > 0 ? files.map(f => f.label).join(' / ') : '—');
-
+      files = raw.filter(f => f.type === 'file' && /\.pdf$/i.test(f.name))
+                 .map(f => { 
+                   const info = parseFileName(f.name); 
+                   return info ? { name: f.name, path: f.path, downloadUrl: f.download_url, ...info } : null; 
+                 })
+                 .filter(Boolean)
+                 .sort((a,b) => b.sortKey.localeCompare(a.sortKey));
       Cache.set(cacheKey, files);
     }
-
     APP.files = files;
-    updateStats(files);
+    updateStats(files, fromCache);
     renderCategories();
 
-    if (files.length === 0) {
-      dbg('warn', '표시할 파일이 없습니다',
-        `pdfs/ 폴더에 YY_MM_DD.pdf 형식 파일을 업로드해 주세요.`);
-      container.innerHTML = `<div class="state-box">
-        <h3>업로드된 신문이 없습니다</h3>
-        <p><code>pdfs/</code> 폴더에 <code>YY_MM_DD.pdf</code> 형식으로 파일을 올려주세요.</p>
-      </div>`;
-    } else {
-      dbg('ok', `목록 렌더링 완료 ✓`, `${files.length}개 신문이 화면에 표시됩니다.`);
-      filterList('all');
-    }
-
+    if (files.length === 0) container.innerHTML = `<div class="state-box"><h3>업로드된 신문이 없습니다</h3></div>`;
+    else filterList('all');
   } catch(err) {
-    console.error('[initList]', err);
-    if (!err.message.includes('API')) {
-      dbg('err', `예상치 못한 오류: ${err.name}`, err.message);
-    }
-    container.innerHTML = `<div class="state-box">
-      <h3>목록을 불러올 수 없습니다</h3>
-      <p>${err.message}</p>
-      <p style="margin-top:8px;"><button class="btn" onclick="refreshList()">🔄 다시 시도</button></p>
-    </div>`;
+    container.innerHTML = `<div class="state-box"><h3>API 오류 발생</h3><p>${err.message}</p></div>`;
   }
 }
 
@@ -705,7 +422,7 @@ function renderCategories() {
     html += `<div class="cat-year">${year}년</div>`;
     [...grouped[year]].sort((a,b) => b - a).forEach(month => {
       const filterKey = `${year}-${month}`;
-      const isActive  = APP.activeFilter === filterKey ? 'active' : '';
+      const isActive = APP.activeFilter === filterKey ? 'active' : '';
       html += `<button class="cat-month ${isActive}" onclick="filterList('${filterKey}')">${month}월호</button>`;
     });
   });
@@ -715,389 +432,144 @@ function renderCategories() {
 window.filterList = function(filterKey) {
   APP.activeFilter = filterKey;
   renderCategories();
-  const filtered = filterKey === 'all'
-    ? APP.files
-    : APP.files.filter(f => `${f.year}-${f.month}` === filterKey);
+  const filtered = filterKey === 'all' ? APP.files : APP.files.filter(f => `${f.year}-${f.month}` === filterKey);
   renderGrid(document.getElementById('pdf-list-container'), filtered);
-};
+}
 
 function renderGrid(container, files) {
   document.getElementById('list-count').textContent = `검색 결과: ${files.length}개`;
-
   if (files.length === 0) {
     container.innerHTML = `<div class="state-box"><h3>해당 카테고리에 신문이 없습니다.</h3></div>`;
     return;
   }
-
+  
   const grid = document.createElement('div');
   grid.className = 'pdf-grid';
-
   files.forEach((file, idx) => {
     const card = document.createElement('article');
     card.className = 'pdf-card';
     card.innerHTML = `
-      <div class="card-thumb">
-        <div class="card-thumb__msg" id="thumb-msg-${file.sortKey}">
-          <div class="mini-spin"></div>
-          <span>미리보기 로딩중...</span>
-        </div>
-        <canvas id="thumb-${file.sortKey}"></canvas>
-      </div>
+      <div class="card-thumb"><canvas id="thumb-${file.sortKey}"></canvas></div>
       <div class="card-top">
-        <div class="card-issue">제 ${String(files.length - idx).padStart(3, '0')}호</div>
+        <div class="card-issue">제 ${String(APP.files.length - APP.files.findIndex(f => f.path === file.path)).padStart(3, '0')}호</div>
         <div class="card-date">${file.month}월 ${file.day}일</div>
         <div class="card-year">${file.year}년</div>
-      </div>`;
+      </div>
+    `;
     card.onclick = () => showView('viewer', file.path);
     grid.appendChild(card);
   });
-
   container.innerHTML = '';
   container.appendChild(grid);
 
-  /* 썸네일 렌더링: 순차 처리로 브라우저 부하 방지 */
-  renderThumbnails(files);
-}
-
-async function renderThumbnails(files) {
-  dbg('info', `썸네일 생성 시작 (${files.length}개)`, '첫 페이지를 순서대로 렌더링합니다.');
-
-  for (const file of files) {
-    const canvas = document.getElementById(`thumb-${file.sortKey}`);
-    const msgEl  = document.getElementById(`thumb-msg-${file.sortKey}`);
-    if (!canvas) continue;
-
-    // 뷰어와 동일한 URL 우선순위 사용
-    const mediaUrl = `https://media.githubusercontent.com/media/${CONFIG.owner}/${CONFIG.repo}/${CONFIG.branch}/${file.path}`;
-    const rawUrl   = `https://raw.githubusercontent.com/${CONFIG.owner}/${CONFIG.repo}/${CONFIG.branch}/${file.path}`;
-    const urls = [
-      file.downloadUrl || mediaUrl,
-      mediaUrl,
-      rawUrl,
-    ].filter((v, i, arr) => arr.indexOf(v) === i); // 중복 제거
-
-    let loaded = false;
-
-    for (const url of urls) {
+  // 고화질 썸네일 생성 처리 (절대 주소 매핑 및 선명도 가속화)
+  setTimeout(async () => {
+    for (const file of files) {
       try {
-        const res = await fetch(url);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-        const buffer = await res.arrayBuffer();
-
-        // LFS 포인터 감지
-        const header = new TextDecoder().decode(buffer.slice(0, 50));
-        if (header.includes('version https://git-lfs')) throw new Error('LFS_POINTER');
-        if (!header.startsWith('%PDF')) throw new Error('Invalid PDF structure');
-
-        const pdf  = await pdfjsLib.getDocument({ data: buffer, cMapUrl: CMAP_URL, cMapPacked: true }).promise;
+        const canvas = document.getElementById(`thumb-${file.sortKey}`);
+        if (!canvas) continue;
+        
+        const absolutePdfUrl = `https://${CONFIG.owner}.github.io/${CONFIG.repo}/${file.path}`;
+        const loadingTask = pdfjsLib.getDocument({ url: absolutePdfUrl, cMapUrl: CMAP_URL, cMapPacked: true });
+        const pdf = await loadingTask.promise;
         const page = await pdf.getPage(1);
-
-        // 썸네일 컨테이너 크기 (고정)
-        const thumbEl = canvas.parentElement;
-        const THUMB_W = thumbEl.clientWidth  || 220;
-        const THUMB_H = thumbEl.clientHeight || 240;
-
-        // PDF 페이지를 썸네일 너비 기준으로 렌더 (약간 고화질)
-        const baseVP  = page.getViewport({ scale: 1 });
-        const scale   = (THUMB_W * 1.5) / baseVP.width;
-        const viewport = page.getViewport({ scale });
-
-        // ① 오프스크린 캔버스에 전체 페이지 렌더링
-        const offCanvas = document.createElement('canvas');
-        offCanvas.width  = Math.floor(viewport.width);
-        offCanvas.height = Math.floor(viewport.height);
-        await page.render({
-          canvasContext: offCanvas.getContext('2d'),
-          viewport,
-        }).promise;
-
-        // ② 가시 캔버스를 썸네일 크기로 고정 후 상단 크롭
-        canvas.width  = THUMB_W;
-        canvas.height = THUMB_H;
-        canvas.style.width  = THUMB_W + 'px';
-        canvas.style.height = THUMB_H + 'px';
-
-        // 비율 유지하며 상단부터 채우기
-        const srcW = offCanvas.width;
-        const srcH = Math.floor(offCanvas.width * (THUMB_H / THUMB_W));
-        canvas.getContext('2d').drawImage(
-          offCanvas,
-          0, 0, srcW, srcH,   // 소스: 전체 너비 × 상단 일부
-          0, 0, THUMB_W, THUMB_H  // 대상: 썸네일 전체
-        );
-
-        if (msgEl) msgEl.style.display = 'none';
-        canvas.style.display = 'block';
-
-        dbg('ok', `썸네일 완료: ${file.name}`, `${(buffer.byteLength/1024).toFixed(0)} KB`);
-        loaded = true;
-        break; // 성공하면 다음 URL 시도 안 함
-
-      } catch(e) {
-        const reason = e.message === 'LFS_POINTER' ? 'LFS 포인터' : e.message;
-        dbg('warn', `썸네일 실패 (${file.name}): ${reason}`, url === urls[urls.length-1] ? '모든 URL 실패' : '다음 URL 시도 중…');
-      }
+        
+        // 배율을 1.5배로 올려 왜곡 현상 제거 및 선명성 최대 확보
+        const viewport = page.getViewport({ scale: 1.5 });
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        
+        const context = canvas.getContext('2d');
+        context.imageSmoothingEnabled = true;
+        context.imageSmoothingQuality = 'high';
+        
+        await page.render({ canvasContext: context, viewport: viewport }).promise;
+      } catch(e) { console.error('미리보기 생성 실패:', e); }
     }
-
-    // 모든 URL 실패 시 에러 아이콘 표시
-    if (!loaded && msgEl) {
-      msgEl.innerHTML = `<span style="font-size:28px;">📄</span><span style="font-family:var(--f-mono);font-size:10px;color:var(--text-mute);">미리보기 없음</span>`;
-    }
-  }
+  }, 100);
 }
 
-function updateStats(files) {
+function updateStats(files, fromCache) {
   const years = [...new Set(files.map(f => f.year))];
-  document.getElementById('stat-total').textContent  = files.length;
-  document.getElementById('stat-years').textContent  = years.length;
+  document.getElementById('stat-total').textContent = files.length;
+  document.getElementById('stat-years').textContent = years.length;
   document.getElementById('stat-latest').textContent = files[0] ? `${files[0].month}/${files[0].day}` : '—';
 }
 
-/* ────────────────────────────────────────────────────────────
-   VIEWER
-──────────────────────────────────────────────────────────── */
 function initViewer(filePath) {
   if (!filePath) { showView('list'); return; }
-
   const filename = filePath.split('/').pop();
-  const info     = parseFileName(filename);
+  const info = parseFileName(filename);
+  
+  const absolutePdfUrl = `https://${CONFIG.owner}.github.io/${CONFIG.repo}/${filePath}`;
 
-  // URL 우선순위: API download_url > media.githubusercontent.com > raw.githubusercontent.com
-  const fileObj       = APP.files.find(f => f.path === filePath);
-  const mediaUrl      = `https://media.githubusercontent.com/media/${CONFIG.owner}/${CONFIG.repo}/${CONFIG.branch}/${filePath}`;
-  const rawUrl        = `https://raw.githubusercontent.com/${CONFIG.owner}/${CONFIG.repo}/${CONFIG.branch}/${filePath}`;
-  const absolutePdfUrl = fileObj?.downloadUrl || mediaUrl;
-
-  document.getElementById('viewer-title').innerHTML =
-    info ? `<em>${info.month}월 ${info.day}일</em> &nbsp;— ${info.year}년 신문` : filename;
+  document.getElementById('viewer-title').innerHTML = info ? `<em>${info.month}월 ${info.day}일</em> &nbsp;— ${info.year}년 신문` : filename;
   document.getElementById('viewer-filename').textContent = filename;
-  document.getElementById('breadcrumb-file').textContent = filename;
-  document.getElementById('viewer-info').innerHTML = info
-    ? `<tr><td>발행일</td><td>${info.label}</td></tr><tr><td>파일명</td><td>${filename}</td></tr>`
-    : `<tr><td>파일</td><td>${filename}</td></tr>`;
+  document.getElementById('viewer-info').innerHTML = info ? `<tr><td>발행일</td><td>${info.label}</td></tr><tr><td>파일명</td><td>${filename}</td></tr>` : `<tr><td>파일</td><td>${filename}</td></tr>`;
 
-  document.getElementById('btn-newtab').href    = absolutePdfUrl;
-  document.getElementById('btn-download').href  = absolutePdfUrl;
-  document.getElementById('btn-download').setAttribute('download', filename);
+  document.getElementById('btn-newtab').href = absolutePdfUrl;
+  document.getElementById('btn-download').href = absolutePdfUrl;
 
   setupIssueNav(filePath);
   loadGiscus(filePath);
 
-  const container  = document.getElementById('pdf-embed');
-  const pageInfoEl = document.getElementById('pdf-page-info');
-  container.innerHTML = `<div style="padding:40px;text-align:center;">
-    <div class="spin-ring"></div>
-    <p style="color:var(--text-mute);font-family:var(--f-mono);font-size:12px;">최고 화질로 렌더링 중…</p>
-  </div>`;
-  if (pageInfoEl) pageInfoEl.textContent = '';
+  const container = document.getElementById('pdf-embed');
+  container.innerHTML = '<div style="padding: 40px;"><div class="spin-ring"></div><p style="color:var(--text-mute);">최고 화질로 신문을 렌더링하고 있습니다...</p></div>';
 
-  dbg('info', 'PDF URL 접근 테스트 중…', absolutePdfUrl);
-
-  // PDF를 직접 fetch → ArrayBuffer로 pdf.js에 전달 (CORS/LFS 우회)
-  async function tryLoadPdf(url, label) {
-    dbg('info', `${label} 시도 중…`, url);
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const buffer = await res.arrayBuffer();
-
-    // LFS 포인터 감지 (실제 PDF가 아닌 경우)
-    const header = new TextDecoder().decode(buffer.slice(0, 50));
-    if (header.includes('version https://git-lfs')) {
-      throw new Error('LFS_POINTER');
+  pdfjsLib.getDocument({ url: absolutePdfUrl, cMapUrl: CMAP_URL, cMapPacked: true }).promise.then(pdf => {
+    container.innerHTML = '';
+    for (let num = 1; num <= pdf.numPages; num++) {
+      pdf.getPage(num).then(page => {
+        const canvas = document.createElement('canvas');
+        container.appendChild(canvas);
+        const context = canvas.getContext('2d');
+        const viewport = page.getViewport({ scale: 1.5 });
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+        
+        context.imageSmoothingEnabled = true;
+        context.imageSmoothingQuality = 'high';
+        
+        page.render({ canvasContext: context, viewport: viewport });
+      });
     }
-    if (!header.startsWith('%PDF')) {
-      throw new Error(`Invalid PDF structure`);
-    }
-    return buffer;
-  }
-
-  // URL 순서대로 시도
-  const urlsToTry = [
-    { url: absolutePdfUrl,  label: '기본 URL' },
-    { url: mediaUrl,        label: 'media URL' },
-    { url: rawUrl,          label: 'raw URL' },
-  ].filter((v, i, arr) => arr.findIndex(x => x.url === v.url) === i); // 중복 제거
-
-  async function loadWithFallback(index = 0) {
-    if (index >= urlsToTry.length) {
-      dbg('err', '모든 URL 시도 실패', '파일이 손상됐거나 비공개 레포일 수 있습니다.');
-      container.innerHTML = `<div style="padding:40px;text-align:center;">
-        <h3 style="color:#c0392b;margin-bottom:8px;">PDF 로드 실패</h3>
-        <p style="color:var(--text-mute);margin-bottom:8px;">모든 URL에서 실패했습니다.</p>
-        <p style="color:var(--text-mute);font-size:12px;margin-bottom:20px;">
-          레포지토리가 Public인지, PDF 파일이 정상인지 확인해주세요.
-        </p>
-        <a href="${mediaUrl}" target="_blank" class="btn">↗ PDF 직접 열기</a>
-      </div>`;
-      return;
-    }
-
-    const { url, label } = urlsToTry[index];
-    try {
-      const buffer = await tryLoadPdf(url, label);
-      dbg('ok', `${label} 성공! PDF 다운로드 완료 (${(buffer.byteLength/1024).toFixed(0)} KB)`);
-
-      const pdf = await pdfjsLib.getDocument({ data: buffer, cMapUrl: CMAP_URL, cMapPacked: true }).promise;
-      dbg('ok', `PDF 렌더링 성공 — 총 ${pdf.numPages}페이지`);
-
-      container.innerHTML = '';
-      if (pageInfoEl) pageInfoEl.textContent = `총 ${pdf.numPages}페이지`;
-
-      const renderPage = num => {
-        pdf.getPage(num).then(page => {
-          // 컨테이너 실제 너비 측정 (패딩 제외)
-          const containerW = container.clientWidth || 600;
-          const availableW = containerW - 32; // 좌우 16px 여백
-
-          // 기본 viewport (scale=1) 로 PDF 원본 크기 파악
-          const baseVP = page.getViewport({ scale: 1 });
-
-          // 컨테이너 너비에 딱 맞는 스케일 계산
-          const scale   = availableW / baseVP.width;
-          const viewport = page.getViewport({ scale });
-
-          // 고해상도(Retina/모바일) 대응: devicePixelRatio 적용
-          const dpr = window.devicePixelRatio || 1;
-          const canvas = document.createElement('canvas');
-          const ctx    = canvas.getContext('2d');
-
-          // 실제 픽셀 크기 = 논리 크기 × dpr (선명하게)
-          canvas.width  = Math.floor(viewport.width  * dpr);
-          canvas.height = Math.floor(viewport.height * dpr);
-
-          // CSS 크기는 논리 크기로 (화면에서 보이는 크기)
-          canvas.style.width  = Math.floor(viewport.width)  + 'px';
-          canvas.style.height = Math.floor(viewport.height) + 'px';
-
-          ctx.scale(dpr, dpr);
-          container.appendChild(canvas);
-          page.render({ canvasContext: ctx, viewport });
-
-          if (num < pdf.numPages) renderPage(num + 1);
-        });
-      };
-
-      // ── 줌 기능 ──
-      const baseW = (container.clientWidth || 600) - 32;
-      const firstPageVP = await pdf.getPage(1).then(p => p.getViewport({ scale: 1 }));
-      const fitScale = baseW / firstPageVP.width;
-
-      let currentZoom = 1.0;
-      const ZOOM_STEPS = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 2.5, 3.0];
-
-      async function reRender(zoom) {
-        currentZoom = zoom;
-        document.getElementById('zoom-level').textContent = Math.round(zoom * 100) + '%';
-        container.innerHTML = '';
-
-        // dpr은 최소 2 보장 → 핀치줌 2배까지 선명
-        const dpr = Math.max(window.devicePixelRatio || 1, 2);
-        const renderScale = fitScale * zoom;
-
-        for (let num = 1; num <= pdf.numPages; num++) {
-          const page     = await pdf.getPage(num);
-          const viewport = page.getViewport({ scale: renderScale });
-          const canvas   = document.createElement('canvas');
-          const ctx      = canvas.getContext('2d');
-
-          canvas.width  = Math.floor(viewport.width  * dpr);
-          canvas.height = Math.floor(viewport.height * dpr);
-          canvas.style.width  = Math.floor(viewport.width)  + 'px';
-          canvas.style.height = Math.floor(viewport.height) + 'px';
-
-          ctx.scale(dpr, dpr);
-          container.appendChild(canvas);
-          await page.render({ canvasContext: ctx, viewport }).promise;
-        }
-        dbg('ok', `줌 ${Math.round(zoom*100)}% 렌더 완료`);
-      }
-
-      // 줌 버튼 이벤트
-      document.getElementById('zoom-in').onclick = () => {
-        const next = ZOOM_STEPS.find(s => s > currentZoom) || ZOOM_STEPS[ZOOM_STEPS.length - 1];
-        reRender(next);
-      };
-      document.getElementById('zoom-out').onclick = () => {
-        const prev = [...ZOOM_STEPS].reverse().find(s => s < currentZoom) || ZOOM_STEPS[0];
-        reRender(prev);
-      };
-      document.getElementById('zoom-fit').onclick = () => reRender(1.0);
-
-      // 초기 렌더: 1.5배 배율로 시작 (핀치줌 50%까지 선명하게 유지)
-      reRender(1.5);
-
-    } catch(err) {
-      const reason = err.message === 'LFS_POINTER'
-        ? 'LFS 포인터 파일 감지 → 다음 URL 시도'
-        : err.message;
-      dbg('warn', `${label} 실패: ${reason}`, `다음 URL로 재시도합니다.`);
-      loadWithFallback(index + 1);
-    }
-  }
-
-  loadWithFallback();
+  }).catch(err => {
+    container.innerHTML = `<div style="padding: 40px;"><h3 style="color:red; margin-bottom:10px;">PDF 로드 실패</h3><p style="color:var(--text-mute); margin-bottom:20px;">우측 상단의 '새 탭' 버튼을 눌러 직접 확인해주세요.</p><a href="${absolutePdfUrl}" target="_blank" class="btn">새 탭에서 바로 열기</a></div>`;
+  });
 }
 
 function setupIssueNav(currentPath) {
-  const files   = APP.files;
-  const idx     = files.findIndex(f => f.path === currentPath);
-  if (idx === -1) return;
+  const files = APP.files;
+  const idx = files.findIndex(f => f.path === currentPath);
+  if(idx === -1) return;
   const prevBtn = document.getElementById('btn-prev');
   const nextBtn = document.getElementById('btn-next');
   prevBtn.disabled = idx >= files.length - 1;
   nextBtn.disabled = idx <= 0;
-  prevBtn.onclick  = () => { if (idx < files.length - 1) showView('viewer', files[idx + 1].path); };
-  nextBtn.onclick  = () => { if (idx > 0) showView('viewer', files[idx - 1].path); };
+  prevBtn.onclick = () => { if (idx < files.length-1) showView('viewer', files[idx+1].path); };
+  nextBtn.onclick = () => { if (idx > 0) showView('viewer', files[idx-1].path); };
 }
 
-/* ────────────────────────────────────────────────────────────
-   GISCUS
-──────────────────────────────────────────────────────────── */
 function loadGiscus(term) {
   const container = document.getElementById('giscus-container');
   container.innerHTML = '';
-  const old = document.querySelector('iframe.giscus-frame');
-  if (old) old.remove();
-
-  if (GISCUS.repoId === 'YOUR_REPO_ID') {
-    container.innerHTML = `<p style="text-align:center;padding:20px;color:var(--text-mute);font-family:var(--f-mono);font-size:12px;line-height:2;">
-      Giscus 설정이 완료되면 여기에 회의 보드가 나타납니다.<br/>
-      <a href="https://giscus.app/ko" target="_blank" style="color:var(--gold);">giscus.app</a>에서 repoId와 categoryId를 발급받아 GISCUS 객체에 입력해 주세요.
-    </p>`;
-    return;
-  }
-
+  if (GISCUS.repoId === 'YOUR_REPO_ID') { container.innerHTML = `<p style="text-align:center; padding:20px; color:var(--text-mute);">Giscus 설정이 완료되면 여기에 회의 보드가 나타납니다.</p>`; return; }
+  
   const s = document.createElement('script');
   s.src = 'https://giscus.app/client.js';
   Object.entries({
-    'data-repo':              GISCUS.repo,
-    'data-repo-id':           GISCUS.repoId,
-    'data-category':          GISCUS.category,
-    'data-category-id':       GISCUS.categoryId,
-    'data-mapping':           'specific',
-    'data-term':              term,
-    'data-strict':            '1',
-    'data-reactions-enabled': '1',
-    'data-theme':             GISCUS.theme,
-    'data-lang':              GISCUS.lang,
-    'crossorigin':            'anonymous',
+    'data-repo': GISCUS.repo, 'data-repo-id': GISCUS.repoId, 'data-category': GISCUS.category,
+    'data-category-id': GISCUS.categoryId, 'data-mapping': 'specific', 'data-term': term,
+    'data-strict': '1', 'data-reactions-enabled': '1', 'data-theme': GISCUS.theme, 'data-lang': GISCUS.lang, 'crossorigin': 'anonymous'
   }).forEach(([k, v]) => s.setAttribute(k, v));
   s.async = true;
   container.appendChild(s);
 }
 
-/* ────────────────────────────────────────────────────────────
-   INIT
-──────────────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
   const dateStr = new Date().toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric' });
   document.getElementById('current-date').textContent = dateStr;
-
-  dbg('info', '페이지 초기화', `접속 시각: ${dateStr}`);
-  dbg('info', `설정 확인: ${CONFIG.owner}/${CONFIG.repo}`,
-    `폴더: ${CONFIG.pdfFolder} / 토큰: ${CONFIG.token ? '설정됨' : '없음 (시간당 60회 제한)'}`);
-
+  
   const { view, file } = parseHash();
   if (view === 'viewer' && file) initList().then(() => _applyView('viewer', file));
   else initList();
