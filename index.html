@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <meta name="description" content="고등학교 신문편집부 × 컴퓨터 동아리 공동 편집 시스템"/>
-<title>진실의 목소리 — 신문편집부</title>
+<title>진실의 목소리 — The School Press</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Noto+Serif+KR:wght@300;400;600;700;900&display=swap" rel="stylesheet"/>
@@ -197,14 +197,14 @@ code { font-family: var(--f-mono); font-size: 0.85em; background: var(--bg-3); b
         <img src="logo.jpg" alt="동아리 로고" />
       </div>
       <div class="title-group">
-        <h1 class="masthead__title">The <strong>School</strong> Press</h1>
+        <h1 class="masthead__title">진실의 <strong>목소리</strong></h1>
         <div class="masthead__rule"></div>
-        <p class="masthead__sub">신문편집부 &nbsp;×&nbsp; 컴퓨터 동아리</p>
+        <p class="masthead__sub">The School Press &nbsp;·&nbsp; 신문편집부 × 컴퓨터 동아리</p>
       </div>
     </div>
     <div class="masthead__right">
       <div id="current-date">날짜 로딩 중…</div>
-      <div class="toolbox-list"><span>✓ 최신호 자동 갱신</span><span>✓ 고화질 미리보기 스캔</span></div>
+      <div class="toolbox-list"><span>✓ 최신호 자동 갱신</span><span>✓ 초고해상도 레티나 스캔</span></div>
     </div>
   </div>
 </header>
@@ -462,7 +462,7 @@ function renderGrid(container, files) {
   container.innerHTML = '';
   container.appendChild(grid);
 
-  // 📸 고화질 썸네일 생성 (아이패드 레티나 디스플레이 MAX 해상도 적용)
+  // 📸 고화질 썸네일 생성 (아이패드 레티나 디스플레이 대응 MAX 해상도 가속 로직)
   setTimeout(async () => {
     for (const file of files) {
       try {
