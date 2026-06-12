@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="description" content="고등학교 진실의목소리 × 툴박스 공동 편집 시스템"/>
+<title>진실의 목소리 — Voice of Truth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Noto+Serif+KR:wght@300;400;600;700;900&display=swap" rel="stylesheet"/>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+</script>
+
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   DESIGN SYSTEM - Light & Clean (정통 신문사 테마)
+═══════════════════════════════════════════════════════════════ */
+:root {
+  --bg: #f8f9fa;
+  --bg-2: #ffffff;
+  --bg-3: #f1f3f5;
+  --border: #dee2e6;
+  --border-2: #adb5bd;
+  --gold: #8b6b1a;
+  --text-main: #212529;
+  --text-dim: #495057;
+  --text-mute: #868e96;
+
+  --f-display: 'Noto Serif KR', serif; 
+  --f-mono: 'DM Mono', monospace;
+  --f-body: 'Noto Serif KR', 'AppleSDGothicNeo-Regular', 'Malgun Gothic', serif;
+  --max-w: 1200px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body { background: var(--bg); color: var(--text-main); font-family: var(--f-body); line-height: 1.5; min-height: 100vh; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+button { cursor: pointer; border: none; background: none; font: inherit; color: inherit; }
+code { font-family: var(--f-mono); font-size: 0.85em; background: var(--bg-3); border: 1px solid var(--border); padding: 2px 6px; color: var(--gold); border-radius: 4px; }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 4px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   HEADER (로고 왼쪽 배치 & 툴박스 오른쪽 배치)
+═══════════════════════════════════════════════════════════════ */
+.masthead { position: relative; border-bottom: 1px solid var(--border); background: var(--bg-2); }
+.masthead::before { content: ''; display: block; height: 3px; background: var(--text-main); }
+.masthead__inner { max-width: var(--max-w); margin: 0 auto; padding: 32px 40px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 24px; }
+.masthead__meta { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.12em; color: var(--text-mute); line-height: 1.8; text-transform: uppercase; }
+
+/* 브랜드 영역 (로고 이미지 렌더링 최적화) */
+.masthead__brand { display: flex; align-items: center; justify-content: center; gap: 20px; }
+.logo-container { width: 80px; height: 80px; border: 1px solid var(--border); background: var(--bg); display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 4px; flex-shrink: 0; }
+.logo-container img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+.title-group { text-align: left; }
+.masthead__title { font-family: var(--f-display); font-size: clamp(28px, 4vw, 52px); font-weight: 700; letter-spacing: 0.02em; line-height: 1.1; color: var(--text-main); white-space: nowrap; }
+.masthead__title strong { color: var(--gold); }
+.masthead__rule { width: 60px; height: 2px; background: var(--border-2); margin: 12px 0; }
+.masthead__sub { font-family: var(--f-body); font-size: 12px; letter-spacing: 0.1em; color: var(--text-dim); }
+
+/* 오른쪽 영역 (날짜 및 툴박스) */
+.masthead__right { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+#current-date { font-family: var(--f-body); font-size: 13px; font-weight: 700; color: var(--text-main); }
+.toolbox-list { display: flex; flex-direction: column; gap: 4px; font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.05em; color: var(--text-dim); text-transform: uppercase; }
+.toolbox-list span { background: var(--bg-3); padding: 4px 8px; border-radius: 4px; }
+
+.site-nav { position: sticky; top: 0; z-index: 100; background: rgba(255, 255, 255, 0.95); border-bottom: 1px solid var(--border); backdrop-filter: blur(10px); }
+.site-nav__inner { max-width: var(--max-w); margin: 0 auto; padding: 0 40px; display: flex; align-items: center; gap: 0; }
+.nav-link { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; color: var(--text-dim); padding: 14px 20px; border-right: 1px solid var(--border); transition: all 0.2s ease; display: flex; align-items: center; gap: 6px; }
+.nav-link:first-child { border-left: 1px solid var(--border); }
+.nav-link:hover { color: var(--text-main); background: var(--bg); }
+.nav-link.active { color: var(--gold); font-weight: 700; }
+.nav-link .nav-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); opacity: 0; }
+.nav-link.active .nav-dot { opacity: 1; }
+.nav-spacer { flex: 1; }
+
+/* ═══════════════════════════════════════════════════════════════
+   LAYOUT & COMPONENTS
+═══════════════════════════════════════════════════════════════ */
+.page-wrapper { max-width: var(--max-w); margin: 0 auto; padding: 40px 40px 100px; }
+.view { display: none; opacity: 0; transform: translateY(5px); transition: opacity 0.3s ease, transform 0.3s ease; }
+.view.active { display: block; opacity: 1; transform: translateY(0); }
+
+.sec-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--text-main); padding-bottom: 10px; margin-bottom: 24px; }
+.sec-header__left { display: flex; align-items: center; gap: 12px; }
+.sec-label { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; background: var(--text-main); color: var(--bg-2); padding: 4px 10px; }
+.sec-title { font-family: var(--f-display); font-size: 24px; font-weight: 700; color: var(--text-main); margin: 0; }
+
+.btn { font-family: var(--f-mono); font-size: 10px; text-transform: uppercase; font-weight: 500; padding: 6px 12px; border: 1px solid var(--border-2); color: var(--text-dim); border-radius: 2px; background: var(--bg-2); transition: 0.2s; }
+.btn:hover { border-color: var(--text-main); color: var(--text-main); background: var(--bg-3); }
+
+.stats-row { display: flex; border: 1px solid var(--border); margin-bottom: 32px; background: var(--bg-2); }
+.stat-cell { flex: 1; padding: 16px 20px; border-right: 1px solid var(--border); }
+.stat-cell:last-child { border-right: none; }
+.stat-num { font-family: var(--f-display); font-size: 28px; font-weight: 700; color: var(--gold); display: block; }
+.stat-lbl { font-family: var(--f-mono); font-size: 10px; color: var(--text-mute); margin-top: 4px; display: block; }
+
+.list-layout { display: grid; grid-template-columns: 220px 1fr; gap: 32px; align-items: start; }
+@media (max-width: 860px) { .list-layout { grid-template-columns: 1fr; } }
+.category-sidebar { background: var(--bg-2); border: 1px solid var(--border); padding: 20px; position: sticky; top: 80px; }
+.cat-title { font-family: var(--f-mono); font-size: 11px; font-weight: 600; text-transform: uppercase; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+.cat-year { font-family: var(--f-display); font-size: 18px; font-weight: 700; margin: 16px 0 8px 0; }
+.cat-month { display: block; width: 100%; text-align: left; padding: 6px 12px; font-size: 14px; color: var(--text-dim); border-left: 3px solid transparent; transition: all 0.2s ease; }
+.cat-month:hover, .cat-month.active { color: var(--text-main); background: var(--bg-3); }
+.cat-month.active { border-left-color: var(--gold); font-weight: 700; }
+.cat-all { font-family: var(--f-body); font-size: 15px; color: var(--text-dim); padding: 8px 12px; border-bottom: 1px dashed var(--border); margin-bottom: 8px; width: 100%; text-align: left; }
+.cat-all:hover, .cat-all.active { color: var(--text-main); font-weight: 700; }
+
+/* 고해상도 미리보기 카드 레이아웃 */
+.pdf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 24px; }
+.pdf-card { background: var(--bg-2); border: 1px solid var(--border); cursor: pointer; display: flex; flex-direction: column; transition: all 0.2s ease; overflow: hidden; }
+.pdf-card:hover { transform: translateY(-4px); border-color: var(--text-main); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+.card-thumb { height: 260px; background: var(--bg-3); border-bottom: 1px solid var(--border); position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.card-thumb::before { content: '미리보기 로딩중...'; position: absolute; font-family: var(--f-mono); font-size: 11px; color: var(--text-mute); z-index: 0; }
+.card-thumb canvas { position: relative; width: 100%; height: 100%; object-fit: cover; object-position: top center; z-index: 1; transition: transform 0.3s ease; }
+.pdf-card:hover .card-thumb canvas { transform: scale(1.03); }
+.card-top { padding: 16px; flex: 1; }
+.card-issue { font-family: var(--f-mono); font-size: 10px; color: var(--gold); margin-bottom: 4px; }
+.card-date { font-family: var(--f-display); font-size: 22px; font-weight: 700; color: var(--text-main); }
+.card-year { font-family: var(--f-mono); font-size: 11px; color: var(--text-mute); margin-top: 4px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   VIEWER LAYOUT
+═══════════════════════════════════════════════════════════════ */
+.viewer-layout { display: grid; grid-template-columns: 1fr 300px; gap: 32px; align-items: start; }
+@media (max-width: 960px) { .viewer-layout { grid-template-columns: 1fr; } }
+.breadcrumb { display: flex; align-items: center; gap: 8px; font-family: var(--f-mono); font-size: 11px; color: var(--text-mute); margin-bottom: 24px; }
+.breadcrumb a { color: var(--text-main); font-weight: 500; }
+.breadcrumb a:hover { color: var(--gold); }
+.breadcrumb__sep { color: var(--border-2); }
+
+.viewer-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; border-bottom: 2px solid var(--text-main); padding-bottom: 12px; margin-bottom: 24px; }
+.viewer-title { font-family: var(--f-display); font-size: clamp(24px, 3.5vw, 36px); font-weight: 700; line-height: 1.2; color: var(--text-main); margin: 0; }
+.viewer-title em { font-style: normal; font-weight: 400; color: var(--gold); }
+
+.pdf-frame { background: var(--bg-3); border: 1px solid var(--border); display: flex; flex-direction: column; }
+.pdf-toolbar { background: var(--bg-2); border-bottom: 1px solid var(--border); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; }
+.pdf-badge { font-family: var(--f-mono); font-size: 10px; background: var(--text-main); color: var(--bg-2); padding: 2px 8px; font-weight: 600; }
+.pdf-filename { font-family: var(--f-mono); font-size: 11px; color: var(--text-dim); margin-left: 10px; }
+#pdf-embed { width: 100%; height: 76vh; min-height: 500px; overflow-y: auto; overflow-x: hidden; padding: 24px 0; text-align: center; }
+#pdf-embed canvas { max-width: 90%; margin: 0 auto 24px auto; display: block; border: 1px solid var(--border-2); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+
+.sidebar { position: sticky; top: 80px; display: flex; flex-direction: column; gap: 20px; }
+.panel { background: var(--bg-2); border: 1px solid var(--border); }
+.panel__head { background: var(--bg-3); border-bottom: 1px solid var(--border); padding: 10px 16px; display: flex; align-items: center; gap: 8px; }
+.panel__head-dot { width: 6px; height: 6px; background: var(--gold); }
+.panel__title { font-family: var(--f-mono); font-size: 11px; font-weight: 600; color: var(--text-main); }
+.panel__body { padding: 16px; }
+.info-table { width: 100%; border-collapse: collapse; }
+.info-table tr + tr td { border-top: 1px dashed var(--border); }
+.info-table td { padding: 8px 0; font-size: 13px; color: var(--text-main); }
+.info-table td:first-child { font-family: var(--f-mono); font-size: 11px; color: var(--text-mute); width: 60px; }
+.issue-nav { display: flex; gap: 8px; margin-bottom: 8px; }
+.issue-nav-btn { flex: 1; padding: 8px; border: 1px solid var(--border); background: var(--bg-3); font-size: 12px; }
+.issue-nav-btn:hover:not(:disabled) { border-color: var(--text-main); color: var(--text-main); background: var(--bg-2); }
+.issue-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.state-box { padding: 60px 20px; text-align: center; background: var(--bg-2); border: 1px solid var(--border); }
+.state-box h3 { font-family: var(--f-display); font-size: 20px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
+.spin-ring { width: 36px; height: 36px; margin: 0 auto 20px; border: 3px solid var(--border); border-top-color: var(--text-main); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.discussion-section { margin-top: 40px; }
+.discussion-header { padding-bottom: 12px; margin-bottom: 20px; border-bottom: 2px solid var(--border); display: flex; justify-content: space-between; }
+.discussion-title { font-family: var(--f-display); font-size: 24px; font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0; }
+.discussion-badge { font-family: var(--f-mono); font-size: 10px; background: var(--gold); color: #fff; padding: 2px 8px; }
+.giscus-wrap { background: var(--bg-2); border: 1px solid var(--border); padding: 24px; min-height: 200px; }
+
+.site-footer { border-top: 1px solid var(--border); margin-top: 80px; background: var(--bg-2); text-align: center; padding: 40px; }
+.footer-brand { font-family: var(--f-display); font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+.footer-brand strong { color: var(--gold); }
+.footer-desc { font-size: 12px; color: var(--text-mute); }
+
+@media (max-width: 768px) {
+  .masthead__inner { grid-template-columns: 1fr; text-align: center; padding: 24px 20px 16px; }
+  .masthead__brand { flex-direction: column; gap: 12px; }
+  .title-group { text-align: center; }
+  .masthead__right { text-align: center; align-items: center; margin-top: 16px; }
+  .page-wrapper { padding: 24px 20px 80px; }
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead__inner">
+    <div class="masthead__meta">진실의목소리 × 툴박스<br/>공동 편집 시스템 v1.0</div>
+    <div class="masthead__brand">
+      <div class="logo-container">
+        <img src="logo.jpg" alt="동아리 로고" />
+      </div>
+      <div class="title-group">
+        <h1 class="masthead__title">진실의 <strong>목소리</strong></h1>
+        <div class="masthead__rule"></div>
+        <p class="masthead__sub">Voice of Truth &nbsp;·&nbsp; 진실의목소리 × 툴박스</p>
+      </div>
+    </div>
+    <div class="masthead__right">
+      <div id="current-date">날짜 로딩 중…</div>
+      <div class="toolbox-list"><span>✓ 최신호 자동 갱신</span><span>✓ 초고해상도 레티나 스캔</span></div>
+    </div>
+  </div>
+</header>
+
+<nav class="site-nav">
+  <div class="site-nav__inner">
+    <a class="nav-link active" id="nav-index" href="#" onclick="showView('list');return false;"><span class="nav-dot"></span>발행 목록</a>
+    <a class="nav-link" id="nav-viewer" href="#" style="display:none" onclick="showView('viewer');return false;"><span class="nav-dot"></span>신문 열람</a>
+    <div class="nav-spacer"></div>
+  </div>
+</nav>
+
+<main class="page-wrapper">
+  <div class="view active" id="view-list">
+    <div class="stats-row" id="stats-row">
+      <div class="stat-cell"><span class="stat-num" id="stat-total">—</span><span class="stat-lbl">총 발행 호수</span></div>
+      <div class="stat-cell"><span class="stat-num" id="stat-years">—</span><span class="stat-lbl">활동 연도</span></div>
+      <div class="stat-cell"><span class="stat-num" id="stat-latest">—</span><span class="stat-lbl">최신 호</span></div>
+    </div>
+    <div class="sec-header">
+      <div class="sec-header__left"><span class="sec-label">Archive</span><h2 class="sec-title">발행 신문 목록</h2></div>
+      <span class="sec-count"><span id="list-count" style="margin-right: 8px;"></span><button class="btn" onclick="refreshList()">🔄 수동 갱신</button></span>
+    </div>
+    <div class="list-layout">
+      <aside class="category-sidebar">
+        <div class="cat-title">Filter by Issue</div>
+        <div id="category-container"></div>
+      </aside>
+      <div id="pdf-list-container">
+        <div class="state-box"><div class="spin-ring"></div><h3>목록 불러오는 중…</h3></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="view" id="view-viewer">
+    <nav class="breadcrumb"><a href="#" onclick="showView('list');return false;">홈</a><span class="breadcrumb__sep">›</span><a href="#" onclick="showView('list');return false;">발행 목록</a><span class="breadcrumb__sep">›</span><span id="breadcrumb-file">열람 중…</span></nav>
+    <div class="viewer-header">
+      <div><h2 class="viewer-title" id="viewer-title">신문 열람 중…</h2></div>
+      <div class="viewer-actions">
+        <a id="btn-newtab" href="#" target="_blank" rel="noopener" class="btn">↗ 새 탭</a>
+        <a id="btn-download" href="#" download class="btn">↓ 다운로드</a>
+        <button class="btn" onclick="showView('list')">← 목록</button>
+      </div>
+    </div>
+    <div class="viewer-layout">
+      <div>
+        <div class="pdf-frame">
+          <div class="pdf-toolbar"><div><span class="pdf-badge">PDF</span><span class="pdf-filename" id="viewer-filename">파일명</span></div></div>
+          <div id="pdf-embed"></div>
+        </div>
+        <section class="discussion-section" id="discussion">
+          <div class="discussion-header">
+            <h3 class="discussion-title">회의 보드 <span class="discussion-badge">Live</span></h3>
+            <p class="discussion-sub">GitHub 계정으로 로그인 후 피드백을 남겨주세요</p>
+          </div>
+          <div class="giscus-wrap"><div id="giscus-container"></div></div>
+        </section>
+      </div>
+      <aside class="sidebar">
+        <div class="panel">
+          <div class="panel__head"><div class="panel__head-dot"></div><span class="panel__title">호 정보</span></div>
+          <div class="panel__body"><table class="info-table" id="viewer-info"><tr><td>상태</td><td>로딩 중…</td></tr></table></div>
+        </div>
+        <div class="panel">
+          <div class="panel__head"><div class="panel__head-dot"></div><span class="panel__title">다른 호 보기</span></div>
+          <div class="panel__body">
+            <div class="issue-nav"><button class="issue-nav-btn" id="btn-prev" disabled>← 이전</button><button class="issue-nav-btn" id="btn-next" disabled>다음 →</button></div>
+            <button class="btn btn-full" onclick="document.getElementById('discussion').scrollIntoView({behavior:'smooth'})">💬 회의 보드로 이동</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">Voice of <strong>Truth</strong></div>
+    <p class="footer-desc">고등학교 진실의목소리 × 툴박스 플랫폼.<br>GitHub Pages 정적 배포 운영.<br>Contact: vot.schoolpress@gmail.com</p>
+  </div>
+</footer>
+
+<script>
+/* ────────────────────────────────────────────────────────────
+   ★ CONFIG (설정값) ★
+──────────────────────────────────────────────────────────── */
+const CONFIG = {
+  owner:     'kimyunho0918-creator',   
+  repo:      'News_site',         
+  pdfFolder: 'pdfs',
+  branch:    'main',
+  token:     '', 
+  cacheTTL:  5 * 60 * 1000,
+};
+
+const GISCUS = {
+  repo:       'YOUR_GITHUB_USERNAME/YOUR_REPO_NAME',
+  repoId:     'YOUR_REPO_ID',                        
+  category:   '회의록',
+  categoryId: 'YOUR_CATEGORY_ID',                    
+  theme:      'light',
+  lang:       'ko',
+};
+
+const CMAP_URL = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/';
+
+/* ────────────────────────────────────────────────────────────
+   UTILITIES & 로직
+──────────────────────────────────────────────────────────── */
+const contUrl = path => `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}`;
+
+class RateLimitError extends Error { constructor(m){ super(m); this.name='RateLimitError'; } }
+class ApiError extends Error { constructor(m,s){ super(m); this.name='ApiError'; this.status=s; } }
+
+async function apiFetch(url) {
+  const headers = { 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' };
+  if (CONFIG.token) headers['Authorization'] = `Bearer ${CONFIG.token}`;
+  const res = await fetch(url, { headers });
+  if (res.status === 403 || res.status === 429) throw new RateLimitError(`API 호출 한도 초과.`);
+  if (!res.ok) throw new ApiError(`API 오류: ${res.status}`, res.status);
+  return res.json();
+}
+
+const Cache = {
+  _k: k => `np_${k}`,
+  get(k) { try { const r = sessionStorage.getItem(this._k(k)); if (!r) return null; const { data, ts } = JSON.parse(r); return (Date.now() - ts > CONFIG.cacheTTL) ? null : data; } catch { return null; } },
+  set(k, d) { try { sessionStorage.setItem(this._k(k), JSON.stringify({ data: d, ts: Date.now() })); } catch {} },
+  clear(k) { sessionStorage.removeItem(this._k(k)); }
+};
+
+function parseFileName(filename) {
+  const m = filename.match(/^(\d{2})_(\d{2})_(\d{2})(?:_.*)?\.pdf$/i);
+  if (!m) return null;
+  const year = 2000 + parseInt(m[1]), month = parseInt(m[2]), day = parseInt(m[3]);
+  return { year, month, day, label: `${year}년 ${month}월 ${day}일`, sortKey: `${year}${m[2]}${m[3]}` };
+}
+
+let APP = { files: [], currentFile: null, currentView: 'list', activeFilter: 'all' };
+
+function showView(view, filePath) {
+  if (view === 'viewer' && filePath) history.pushState(null, '', `#viewer?file=${encodeURIComponent(filePath)}`);
+  else history.pushState(null, '', '#list');
+  _applyView(view, filePath);
+}
+
+function _applyView(view, filePath) {
+  document.getElementById('view-list').classList.toggle('active', view === 'list');
+  document.getElementById('view-viewer').classList.toggle('active', view === 'viewer');
+  document.getElementById('nav-index').classList.toggle('active', view === 'list');
+  document.getElementById('nav-viewer').classList.toggle('active', view === 'viewer');
+  document.getElementById('nav-viewer').style.display = view === 'viewer' ? '' : 'none';
+  APP.currentView = view;
+  if (view === 'viewer' && filePath) initViewer(filePath);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+window.addEventListener('popstate', () => {
+  const { view, file } = parseHash();
+  _applyView(view, file);
+});
+
+function parseHash() {
+  const hash = window.location.hash || '#list';
+  if (hash.startsWith('#viewer')) return { view: 'viewer', file: new URLSearchParams(hash.split('?')[1] || '').get('file') };
+  return { view: 'list', file: null };
+}
+
+function refreshList() {
+  Cache.clear(`list_${CONFIG.owner}_${CONFIG.repo}`);
+  initList();
+}
+
+async function initList() {
+  const container = document.getElementById('pdf-list-container');
+  container.innerHTML = `<div class="state-box"><div class="spin-ring"></div><h3>목록 불러오는 중…</h3></div>`;
+
+  try {
+    const cacheKey = `list_${CONFIG.owner}_${CONFIG.repo}`;
+    let files = Cache.get(cacheKey);
+    let fromCache = true;
+
+    if (!files) {
+      fromCache = false;
+      const raw = await apiFetch(contUrl(CONFIG.pdfFolder));
+      files = raw.filter(f => f.type === 'file' && /\.pdf$/i.test(f.name))
+                 .map(f => { 
+                   const info = parseFileName(f.name); 
+                   return info ? { name: f.name, path: f.path, downloadUrl: f.download_url, ...info } : null; 
+                 })
+                 .filter(Boolean)
+                 .sort((a,b) => b.sortKey.localeCompare(a.sortKey));
+      Cache.set(cacheKey, files);
+    }
+    APP.files = files;
+    updateStats(files, fromCache);
+    renderCategories();
+
+    if (files.length === 0) container.innerHTML = `<div class="state-box"><h3>업로드된 신문이 없습니다</h3></div>`;
+    else filterList('all');
+  } catch(err) {
+    container.innerHTML = `<div class="state-box"><h3>API 오류 발생</h3><p>${err.message}</p></div>`;
+  }
+}
+
+function renderCategories() {
+  const catContainer = document.getElementById('category-container');
+  const grouped = APP.files.reduce((acc, file) => {
+    if (!acc[file.year]) acc[file.year] = new Set();
+    acc[file.year].add(file.month);
+    return acc;
+  }, {});
+
+  let html = `<button class="cat-all ${APP.activeFilter === 'all' ? 'active' : ''}" onclick="filterList('all')">전체 보기</button>`;
+  Object.keys(grouped).sort((a,b) => b - a).forEach(year => {
+    html += `<div class="cat-year">${year}년</div>`;
+    [...grouped[year]].sort((a,b) => b - a).forEach(month => {
+      const filterKey = `${year}-${month}`;
+      const isActive = APP.activeFilter === filterKey ? 'active' : '';
+      html += `<button class="cat-month ${isActive}" onclick="filterList('${filterKey}')">${month}월호</button>`;
+    });
+  });
+  catContainer.innerHTML = html;
+}
+
+window.filterList = function(filterKey) {
+  APP.activeFilter = filterKey;
+  renderCategories();
+  const filtered = filterKey === 'all' ? APP.files : APP.files.filter(f => `${f.year}-${f.month}` === filterKey);
+  renderGrid(document.getElementById('pdf-list-container'), filtered);
+}
+
+function renderGrid(container, files) {
+  document.getElementById('list-count').textContent = `검색 결과: ${files.length}개`;
+  if (files.length === 0) {
+    container.innerHTML = `<div class="state-box"><h3>해당 카테고리에 신문이 없습니다.</h3></div>`;
+    return;
+  }
+  
+  const grid = document.createElement('div');
+  grid.className = 'pdf-grid';
+  files.forEach((file, idx) => {
+    const card = document.createElement('article');
+    card.className = 'pdf-card';
+    card.innerHTML = `
+      <div class="card-thumb"><canvas id="thumb-${file.sortKey}"></canvas></div>
+      <div class="card-top">
+        <div class="card-issue">제 ${String(APP.files.length - APP.files.findIndex(f => f.path === file.path)).padStart(3, '0')}호</div>
+        <div class="card-date">${file.month}월 ${file.day}일</div>
+        <div class="card-year">${file.year}년</div>
+      </div>
+    `;
+    card.onclick = () => showView('viewer', file.path);
+    grid.appendChild(card);
+  });
+  container.innerHTML = '';
+  container.appendChild(grid);
+
+  // 📸 고화질 썸네일 생성 (아이패드 레티나 디스플레이 대응 MAX 해상도 가속 로직)
+  setTimeout(async () => {
+    for (const file of files) {
+      try {
+        const canvas = document.getElementById(`thumb-${file.sortKey}`);
+        if (!canvas) continue;
+        
+        const absolutePdfUrl = `https://${CONFIG.owner}.github.io/${CONFIG.repo}/${file.path}`;
+        const loadingTask = pdfjsLib.getDocument({ url: absolutePdfUrl, cMapUrl: CMAP_URL, cMapPacked: true });
+        const pdf = await loadingTask.promise;
+        const page = await pdf.getPage(1);
+        
+        const pixelRatio = window.devicePixelRatio || 1;
+        const viewport = page.getViewport({ scale: 4 * pixelRatio });
+        
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        
+        const context = canvas.getContext('2d');
+        context.imageSmoothingEnabled = true;
+        context.imageSmoothingQuality = 'high';
+        
+        await page.render({ canvasContext: context, viewport: viewport }).promise;
+      } catch(e) { console.error('미리보기 생성 실패:', e); }
+    }
+  }, 100);
+}
+
+function updateStats(files, fromCache) {
+  const years = [...new Set(files.map(f => f.year))];
+  document.getElementById('stat-total').textContent = files.length;
+  document.getElementById('stat-years').textContent = years.length;
+  document.getElementById('stat-latest').textContent = files[0] ? `${files[0].month}/${files[0].day}` : '—';
+}
+
+function initViewer(filePath) {
+  if (!filePath) { showView('list'); return; }
+  const filename = filePath.split('/').pop();
+  const info = parseFileName(filename);
+  
+  const absolutePdfUrl = `https://${CONFIG.owner}.github.io/${CONFIG.repo}/${filePath}`;
+
+  document.getElementById('viewer-title').innerHTML = info ? `<em>${info.month}월 ${info.day}일</em> &nbsp;— ${info.year}년 신문` : filename;
+  document.getElementById('viewer-filename').textContent = filename;
+  document.getElementById('viewer-info').innerHTML = info ? `<tr><td>발행일</td><td>${info.label}</td></tr><tr><td>파일명</td><td>${filename}</td></tr>` : `<tr><td>파일</td><td>${filename}</td></tr>`;
+
+  document.getElementById('btn-newtab').href = absolutePdfUrl;
+  document.getElementById('btn-download').href = absolutePdfUrl;
+
+  setupIssueNav(filePath);
+  loadGiscus(filePath);
+
+  const container = document.getElementById('pdf-embed');
+  container.innerHTML = '<div style="padding: 40px;"><div class="spin-ring"></div><p style="color:var(--text-mute);">최고 화질로 신문을 렌더링하고 있습니다...</p></div>';
+
+  pdfjsLib.getDocument({ url: absolutePdfUrl, cMapUrl: CMAP_URL, cMapPacked: true }).promise.then(pdf => {
+    container.innerHTML = '';
+    for (let num = 1; num <= pdf.numPages; num++) {
+      pdf.getPage(num).then(page => {
+        const canvas = document.createElement('canvas');
+        container.appendChild(canvas);
+        const context = canvas.getContext('2d');
+        const viewport = page.getViewport({ scale: 1.5 });
+        
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+        
+        context.imageSmoothingEnabled = true;
+        context.imageSmoothingQuality = 'high';
+        
+        page.render({ canvasContext: context, viewport: viewport });
+      });
+    }
+  }).catch(err => {
+    container.innerHTML = `<div style="padding: 40px;"><h3 style="color:red; margin-bottom:10px;">PDF 로드 실패</h3><p style="color:var(--text-mute); margin-bottom:20px;">우측 상단의 '새 탭' 버튼을 눌러 직접 확인해주세요.</p><a href="${absolutePdfUrl}" target="_blank" class="btn">새 탭에서 바로 열기</a></div>`;
+  });
+}
+
+function setupIssueNav(currentPath) {
+  const files = APP.files;
+  const idx = files.findIndex(f => f.path === currentPath);
+  if(idx === -1) return;
+  const prevBtn = document.getElementById('btn-prev');
+  const nextBtn = document.getElementById('btn-next');
+  prevBtn.disabled = idx >= files.length - 1;
+  nextBtn.disabled = idx <= 0;
+  prevBtn.onclick = () => { if (idx < files.length-1) showView('viewer', files[idx+1].path); };
+  nextBtn.onclick = () => { if (idx > 0) showView('viewer', files[idx-1].path); };
+}
+
+function loadGiscus(term) {
+  const container = document.getElementById('giscus-container');
+  container.innerHTML = '';
+  if (GISCUS.repoId === 'YOUR_REPO_ID') { container.innerHTML = `<p style="text-align:center; padding:20px; color:var(--text-mute);">Giscus 설정이 완료되면 여기에 회의 보드가 나타납니다.</p>`; return; }
+  
+  const s = document.createElement('script');
+  s.src = 'https://giscus.app/client.js';
+  Object.entries({
+    'data-repo': GISCUS.repo, 'data-repo-id': GISCUS.repoId, 'data-category': GISCUS.category,
+    'data-category-id': GISCUS.categoryId, 'data-mapping': 'specific', 'data-term': term,
+    'data-strict': '1', 'data-reactions-enabled': '1', 'data-theme': GISCUS.theme, 'data-lang': GISCUS.lang, 'crossorigin': 'anonymous'
+  }).forEach(([k, v]) => s.setAttribute(k, v));
+  s.async = true;
+  container.appendChild(s);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const dateStr = new Date().toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric' });
+  document.getElementById('current-date').textContent = dateStr;
+  
+  const { view, file } = parseHash();
+  if (view === 'viewer' && file) initList().then(() => _applyView('viewer', file));
+  else initList();
+});
+</script>
+</body>
+</html>
