@@ -16,7 +16,7 @@
 
 <style>
 /* ═══════════════════════════════════════════════════════════════
-   DESIGN SYSTEM - Light & Clean (밝은 신문사 테마)
+   DESIGN SYSTEM - Light & Clean (정통 신문사 테마)
 ═══════════════════════════════════════════════════════════════ */
 :root {
   --bg: #f8f9fa;
@@ -107,7 +107,7 @@ code { font-family: var(--f-mono); font-size: 0.85em; background: var(--bg-3); b
 .category-sidebar { background: var(--bg-2); border: 1px solid var(--border); padding: 20px; position: sticky; top: 80px; }
 .cat-title { font-family: var(--f-mono); font-size: 11px; font-weight: 600; text-transform: uppercase; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
 .cat-year { font-family: var(--f-display); font-size: 18px; font-weight: 700; margin: 16px 0 8px 0; }
-.cat-month { display: block; width: 100%; text-align: left; padding: 6px 12px; font-size: 14px; color: var(--text-dim); border-left: 3px solid transparent; }
+.cat-month { display: block; width: 100%; text-align: left; padding: 6px 12px; font-size: 14px; color: var(--text-dim); border-left: 3px solid transparent; transition: all 0.2s ease; }
 .cat-month:hover, .cat-month.active { color: var(--text-main); background: var(--bg-3); }
 .cat-month.active { border-left-color: var(--gold); font-weight: 700; }
 .cat-all { font-family: var(--f-body); font-size: 15px; color: var(--text-dim); padding: 8px 12px; border-bottom: 1px dashed var(--border); margin-bottom: 8px; width: 100%; text-align: left; }
@@ -462,7 +462,7 @@ function renderGrid(container, files) {
   container.innerHTML = '';
   container.appendChild(grid);
 
-  // 고화질 썸네일 생성 처리 (절대 주소 매핑 및 선명도 가속화)
+  // 📸 고화질 썸네일 생성 (아이패드 레티나 디스플레이 MAX 해상도 적용)
   setTimeout(async () => {
     for (const file of files) {
       try {
@@ -474,10 +474,13 @@ function renderGrid(container, files) {
         const pdf = await loadingTask.promise;
         const page = await pdf.getPage(1);
         
-        // 배율을 1.5배로 올려 왜곡 현상 제거 및 선명성 최대 확보
-        const viewport = page.getViewport({ scale: 1.5 });
+        const pixelRatio = window.devicePixelRatio || 1;
+        const viewport = page.getViewport({ scale: 2.5 * pixelRatio });
+        
         canvas.width = viewport.width;
         canvas.height = viewport.height;
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
         
         const context = canvas.getContext('2d');
         context.imageSmoothingEnabled = true;
@@ -524,6 +527,7 @@ function initViewer(filePath) {
         container.appendChild(canvas);
         const context = canvas.getContext('2d');
         const viewport = page.getViewport({ scale: 1.5 });
+        
         canvas.height = viewport.height;
         canvas.width = viewport.width;
         
